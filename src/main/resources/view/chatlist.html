@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <h1>Ihre Liste von Chats</h1>
+    <ul>
+        <li th:each="chat : ${chats}" th:text="${chat}"></li>
+    </ul>
+</form>
+</body>
+</html>

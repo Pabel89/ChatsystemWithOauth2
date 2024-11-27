@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chatnachrichten</title>
+</head>
+<body>
+    <h1>Folgende Nachrichten in diesem Chat</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nachrichten</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="message : ${messages}">
+                <td><span th:text="${message.getUser().getFullname()}"></span>:</td>
+                <td><span th:text="${message.content}"></span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

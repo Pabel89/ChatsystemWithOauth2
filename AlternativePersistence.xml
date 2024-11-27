@@ -1,0 +1,30 @@
+@Configuration
+@EnableJpaRepositories(basePackages = "your.package.repositories")
+public class AppConfig {
+
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/your_database_name");
+        dataSource.setUsername("your_username");
+        dataSource.setPassword("your_password");
+        return dataSource;
+    }
+
+    @Bean
+    public EntityManagerFactory entityManagerFactory(DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
+        emfb.setDataSource(dataSource);
+        emfb.setPackagesToScan("your.package.entities");
+        emfb.setJpaProperties(jpaProperties());
+        return emfb.getObject();
+    }
+
+    private Properties jpaProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+        // Add other desired properties here
+        return properties;
+    }
+}

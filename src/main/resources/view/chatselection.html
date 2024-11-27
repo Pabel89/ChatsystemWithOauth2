@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <form action="#" th:action="@{/add}" method="post">  
+        <select name="selectedUsername">
+        <option th:each="user : ${users}" th:value="${user.username}">
+            [[${user.username}]]
+        </option>
+    </select>
+    <input type="text" name="initialMessage"></input>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>
