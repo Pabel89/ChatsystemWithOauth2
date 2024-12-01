@@ -16,11 +16,14 @@ import githubchat.services.MessageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.Collection;
 import java.util.List;
@@ -59,11 +62,23 @@ public class Chatcontroller {
         return "chatlist";
     }
 
+    @GetMapping("/testwebsocket")
+    public String testwebsocket(@AuthenticationPrincipal OAuth2User principal, ModelMap map){
+        
+        return "testwebsocket";
+    }
+
+    @MessageMapping("/hello") // Client sends to /app/hello
+    @SendTo("/topic/greetings") // Broadcast to subscribers
+    public String sendMessage(String message) {
+        return "Hello, " + message;
+    }
+
     @GetMapping("/chat/{chatId}")
     public String chatMessages(@AuthenticationPrincipal OAuth2User principal, ModelMap map, @PathVariable long chatId) {
         try {
             String username = (String) principal.getAttributes().get("login");
-
+            //messagingTemplate.convertAndSend("/topic/greetings", message);
             if (cd.doesChatBelongToUser(username, chatId)) {
                 List<Message> messages = (List<Message>) md.findMessagesFromChat(chatId);
                 map.addAttribute("messages", messages);
@@ -77,7 +92,6 @@ public class Chatcontroller {
             return "error"; // Assuming an "error.html" template exists
         }
     }
-
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('USER')")
