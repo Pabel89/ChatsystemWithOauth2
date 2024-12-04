@@ -68,10 +68,10 @@ public class Chatcontroller {
         return "testwebsocket";
     }
 
-    @MessageMapping("/hello") // Client sends to /app/hello
-    @SendTo("/topic/greetings") // Broadcast to subscribers
+    @MessageMapping("/chatmessages") // Client sends to /app/hello
+    @SendTo("/incomingchats/chatmessages") // Broadcast to subscribers
     public String sendMessage(String message) {
-        return "Hello, " + message;
+        return message;
     }
 
     @GetMapping("/chat/{chatId}")
@@ -81,6 +81,8 @@ public class Chatcontroller {
             //messagingTemplate.convertAndSend("/topic/greetings", message);
             if (cd.doesChatBelongToUser(username, chatId)) {
                 List<Message> messages = (List<Message>) md.findMessagesFromChat(chatId);
+                map.addAttribute("chatnumber",chatId);
+                map.addAttribute("username",username);
                 map.addAttribute("messages", messages);
                 return "chatmessages"; // Assuming the template is named "chat.html"
             } else {

@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Folgende Nachrichten in diesem Chat</h1>
-    <table>
+    <table id="messagetable">
         <thead>
             <tr>
                 <th>Nachrichten</th>
@@ -15,34 +15,41 @@
         </thead>
         <tbody>
             <tr th:each="message : ${messages}">
-                <td><span th:text="${message.getUser().getFullname()}"></span>:</td>
+                <td><span th:text="${message.getUser().getUsername()}"></span>:</td>
                 <td><span th:text="${message.content}"></span></td>
             </tr>
             <div id="message-area"></div>
         </tbody>
     </table>
-    <script>
+    <script th:inline="javascript">
         var socket = new SockJS('/mywebsocket');
         var stompClient = Stomp.over(socket);
+        var myuser =  /*[[${username}]]*/;
+        var chatId = [[${chatnumber}]];
       
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
       
-            stompClient.subscribe('/topic/greetings',   
+            stompClient.subscribe('/incomingchats/chatmessages',   
        function(message) {
-                console.log(message.body);   
-      
-                // Update your view's DOM with the received message
-                document.getElementById('message-area').textContent = message.body;
+                
+                let table = document.getElementById("messagetable").getElementsByTagName('tbody')[0];
+                let mymessage = JSON.parse(message.body);
+                let newRow = table.insertRow();
+                let senderColumn = newRow.insertCell(0); // First column
+                let messageColumn = newRow.insertCell(1); // Second column
+
+                senderColumn.textContent = mymessage.user;
+                messageColumn.textContent = mymessage.message;
             });
         });
 
         function sendMessage() {
-            let user= document.getElementById("user").value;
-    stompClient.send("/app/hello", {}, JSON.stringify({ name: user }));
+            let usermessage= document.getElementById("usermessage").value;
+        stompClient.send("/outgoingchats/chatmessages", {}, JSON.stringify({user:myuser,Chat: chatId,message: usermessage }));
 }
       </script>
-      <input type="text" id="user"></input>
+      <input type="text" id="usermessage"></input>
       <button onclick="sendMessage()">Send Message</button>
 </body>
 </html>
