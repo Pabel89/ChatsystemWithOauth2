@@ -46,6 +46,25 @@ public class ChatService {
         return c;
     }
 
+    public boolean doesChatBelongToUserAndAccessKey(String _username, long _id, String _accesskey){
+        boolean result = false;
+        Collection<Chat> chats = cr.findChatsFromUser(_username);
+        
+        for (Chat chat : chats) {
+            if(chat.getId() == _id && chat.getChatAccesskey()== _accesskey){
+                result = true;
+                
+            }
+        }
+        if(result){
+            System.out.println("Chat belongs to user");
+        }else{
+            System.out.println("Chat belongs not to user");
+        }
+
+        return result;
+    }
+
     public boolean doesChatBelongToUser(String _username, long _id){
         boolean result = false;
         Collection<Chat> chats = cr.findChatsFromUser(_username);
