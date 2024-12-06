@@ -26,28 +26,50 @@
         var stompClient = Stomp.over(socket);
         var myuser =  /*[[${username}]]*/;
         var chatId = [[${chatnumber}]];
+        var accessKey = "yourAccessKey";
       
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
       
-            stompClient.subscribe('/incomingchats/chatmessages',   
+            let source = `/incomingchats/chatmessages/${accessKey}`;
+            stompClient.subscribe(source,   
        function(message) {
                 
                 let table = document.getElementById("messagetable").getElementsByTagName('tbody')[0];
-                let mymessage = JSON.parse(message.body);
+                
+                console.log("Message content"+message.body);
+                let myformattedmessage = JSON.parse(message.body);
                 let newRow = table.insertRow();
                 let senderColumn = newRow.insertCell(0); // First column
                 let messageColumn = newRow.insertCell(1); // Second column
 
-                senderColumn.textContent = mymessage.user;
-                messageColumn.textContent = mymessage.message;
+                senderColumn.textContent = myformattedmessage.user;
+                messageColumn.textContent = myformattedmessage.message;
             });
         });
 
         function sendMessage() {
-            let usermessage= document.getElementById("usermessage").value;
-        stompClient.send("/outgoingchats/chatmessages", {}, JSON.stringify({user:myuser,Chat: chatId,message: usermessage }));
-}
+            let usermessage = document.getElementById("usermessage").value;
+
+            // Leere Eingaben verhindern
+            if (!usermessage.trim()) {
+                alert("Nachricht darf nicht leer sein!");
+                return;
+            }
+
+            // Erstelle die Nachricht entsprechend der Serverlogik
+            let chatMessage = {
+                content: JSON.stringify({user:myuser,Chat: chatId,message: usermessage }), // Text der Nachricht
+                type: "received"      // Setze den Typ auf "received", da sie vom Client gesendet wird
+            };
+
+            let destination = `/outgoingchats/chatmessages/${accessKey}`;
+            // Nachricht senden
+            stompClient.send(destination, {}, JSON.stringify(chatMessage));
+
+            // Eingabefeld zurücksetzen
+            document.getElementById("usermessage").value = "";
+        }
       </script>
       <input type="text" id="usermessage"></input>
       <button onclick="sendMessage()">Send Message</button>

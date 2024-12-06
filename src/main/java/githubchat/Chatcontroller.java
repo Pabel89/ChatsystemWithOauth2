@@ -2,6 +2,7 @@ package githubchat;
 
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,13 +17,18 @@ import githubchat.services.MessageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.*;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import jakarta.servlet.http.HttpSession;
+
 
 
 import java.util.Collection;
@@ -68,14 +74,27 @@ public class Chatcontroller {
         return "testwebsocket";
     }
 
-    @MessageMapping("/chatmessages") // Client sends to /app/hello
-    @SendTo("/incomingchats/chatmessages") // Broadcast to subscribers
-    public String sendMessage(String message) {
-        return message;
+    
+    @MessageMapping("/chatmessages/{accesskey}") // Client sends to /app/hello
+    @SendTo("/incomingchats/chatmessages/{accesskey}") // Broadcast to subscribers
+    public String sendMessage(@DestinationVariable String accesskey, ChatMessage message) {
+       System.out.println("accesskey sent from client: "+accesskey);
+        if ("received".equals(message.getType())) {
+            // Nachricht wurde empfangen, verarbeite sie
+            System.out.println("Message will be processed");
+            String newContent = message.getContent().replace("\\", "");
+            System.out.println("new Content: "+newContent);
+            message.setContent(newContent);
+            message.setType("sent"); // Setze den Typ für die ausgehende Nachricht
+        }
+        return message.getContent();
     }
+    
+
 
     @GetMapping("/chat/{chatId}")
     public String chatMessages(@AuthenticationPrincipal OAuth2User principal, ModelMap map, @PathVariable long chatId) {
+        
         try {
             String username = (String) principal.getAttributes().get("login");
             //messagingTemplate.convertAndSend("/topic/greetings", message);

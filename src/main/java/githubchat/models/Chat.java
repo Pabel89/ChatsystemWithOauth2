@@ -21,6 +21,9 @@ public class Chat {
     @Column(name = "isPrivate")
     private boolean isPrivate;
 
+	@Column(name = "chatAccesskey")
+    private String chatAccesskey;
+
 	@OneToMany(mappedBy = "chat")
     private List<Message> messages;
 
@@ -47,6 +50,14 @@ public class Chat {
 
 	public void setPublished(boolean isPublished) {
 		this.published = isPublished;
+	}
+
+	public String getChatAccesskey() {
+		return chatAccesskey;
+	}
+
+	public void setChatAccesskey(String _chatAccesskey) {
+		this.chatAccesskey = _chatAccesskey;
 	}
 
     public boolean getIsPrivate(){
