@@ -22,6 +22,13 @@ public class UserService {
         return chatusers;
     }
 
+    public Chatuser getFirstUserWithUsername(String username){
+
+        List<Chatuser> chatusers = cur.findByUsername(username);
+
+        return chatusers.get(0);
+    }
+
     public List<Chatuser> getAllChatusers() {
         // Call findAll and convert the result to a List (optional)
         Iterable<Chatuser> chatusers = cur.findAll();

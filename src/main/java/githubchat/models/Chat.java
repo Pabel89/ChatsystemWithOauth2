@@ -24,7 +24,7 @@ public class Chat {
 	@Column(name = "chatAccesskey")
     private String chatAccesskey;
 
-	@OneToMany(mappedBy = "chat")
+	@OneToMany(mappedBy = "chat",fetch = FetchType.EAGER)
     private List<Message> messages;
 
 	@ManyToMany(mappedBy = "chats")

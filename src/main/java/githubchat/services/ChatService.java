@@ -46,12 +46,19 @@ public class ChatService {
         return c;
     }
 
+    public Chat getChatById(long _id){
+        Chat myChat = null;
+        myChat = cr.findChatById(_id);
+
+        return myChat;
+    }
+
     public boolean doesChatBelongToUserAndAccessKey(String _username, long _id, String _accesskey){
         boolean result = false;
         Collection<Chat> chats = cr.findChatsFromUser(_username);
         
         for (Chat chat : chats) {
-            if(chat.getId() == _id && chat.getChatAccesskey()== _accesskey){
+            if(chat.getId() == _id && chat.getChatAccesskey().equals(_accesskey)){
                 result = true;
                 
             }

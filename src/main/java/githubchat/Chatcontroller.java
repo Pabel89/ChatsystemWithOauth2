@@ -84,13 +84,19 @@ public class Chatcontroller {
             try {
                 // Parse the JSON string into a JSONObject
                 JSONObject jsonObject = (JSONObject) parser.parse(newContent);
-    
+                String StrContent;
                 // Access data from the parsed JSONObject
                 String user = (String) jsonObject.get("user");
                 long chatid = (long) jsonObject.get("Chat");
+                StrContent = (String) jsonObject.get("message");
                 if(cd.doesChatBelongToUserAndAccessKey(user, chatid,accesskey)){
                     isUserInChat = true;
-
+                    
+                    Message newMessage = new Message(StrContent, cd.getChatById(chatid),us.getFirstUserWithUsername(user));
+                    Chat myChat = cd.getChatById(chatid);
+                    myChat.addMessage(newMessage);
+                    cd.save(myChat,newMessage);
+                    
                     System.out.println("Message will be saved because User is in Chat");
                 }
                 
@@ -116,10 +122,18 @@ public class Chatcontroller {
             //messagingTemplate.convertAndSend("/topic/greetings", message);
             if (cd.doesChatBelongToUser(username, chatId)) {
                 List<Message> messages = (List<Message>) md.findMessagesFromChat(chatId);
-                map.addAttribute("chatnumber",chatId);
-                map.addAttribute("username",username);
-                map.addAttribute("messages", messages);
-                return "chatmessages"; // Assuming the template is named "chat.html"
+                Chat myChat = cd.getChatById(chatId);
+                if(myChat != null){
+                    map.addAttribute("chatnumber",chatId);
+                    map.addAttribute("accesskey",myChat.getChatAccesskey());
+                    map.addAttribute("username",username);
+                    map.addAttribute("messages", messages);
+                    
+                    return "chatmessages"; // Assuming the template is named "chat.html"
+
+                }else{
+                    return "Chat invalid";
+                }
             } else {
                 return "unauthorized"; // Handle unauthorized access
             }
