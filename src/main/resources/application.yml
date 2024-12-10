@@ -9,13 +9,46 @@ spring:
     oauth2:
       client:
         registration:
+          auth0:
+            clientId: {auth0 client id}
+            clientSecret: {auth0 clientsecret}
+            scope: 
+              - openid
+              - profile
+              - email
+            authorizationGrantType: authorization_code
+            redirectUri: http://localhost:8080/login/oauth2/code/auth0
+            clientAuthenticationMethod: client_secret_post  
+            provider: auth0
           github:
-            clientId: 
-            clientSecret:  
+            clientId: {github client id}
+            clientSecret: {github client secret} 
+          facebook:
+            clientId: {facebook client id}
+            clientSecret: {facebook client secret}
+            scope:
+              - public_profile
+              - email
+            redirectUri: http://localhost:8080/login/oauth2/code/facebook
+            authorizationGrantType: authorization_code
+            clientName: Facebook
+        provider:
+          auth0:
+            authorizationUri: https://{auth0 appdomain}/authorize
+            tokenUri: https://{auth0 appdomain}/oauth/token
+            userInfoUri: https://{auth0 appdomain}/userinfo
+            userNameAttribute: sub
+            audience: https://{auth0 appdomain}/api/v2/
+            jwkSetUri: https://{auth0 appdomain}/.well-known/jwks.json 
+          facebook:
+            authorizationUri: https://www.facebook.com/v13.0/dialog/oauth
+            tokenUri: https://graph.facebook.com/v13.0/oauth/access_token
+            userInfoUri: https://graph.facebook.com/me?fields=id,name,email
+            userNameAttribute: id
   datasource:
     url: jdbc:h2:file:./data/mydatabase
-    username: test
-    password: test
+    username: {h2 username}
+    password: {h2 passwort}
     driverClassName: org.h2.Driver
   h2:
     console:
@@ -32,3 +65,4 @@ spring:
       level:
         org.hibernate.SQL: DEBUG
         org.hibernate.type: TRACE
+        org.springframework.security: DEBUG
