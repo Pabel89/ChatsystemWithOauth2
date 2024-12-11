@@ -1,13 +1,13 @@
-package githubchat.services;
+package chatsystem.services;
 
-
-import githubchat.models.Chatuser;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import githubchat.repositories.ChatuserRepository;
+
+import chatsystem.models.Chatuser;
+import chatsystem.repositories.ChatuserRepository;
 
 @Service
 public class UserService {

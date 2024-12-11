@@ -1,14 +1,14 @@
-package githubchat.services;
-
-import githubchat.models.Chat;
-import githubchat.models.Message;
+package chatsystem.services;
 
 import java.util.List;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import githubchat.repositories.ChatRepository;
-import githubchat.repositories.MessageRepository;
+
+import chatsystem.models.Chat;
+import chatsystem.models.Message;
+import chatsystem.repositories.ChatRepository;
+import chatsystem.repositories.MessageRepository;
 
 
 @Service

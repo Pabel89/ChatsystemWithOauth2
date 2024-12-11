@@ -1,4 +1,4 @@
-package githubchat;
+package chatsystem;
 
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import githubchat.models.*;
-import githubchat.services.ChatService;
-import githubchat.services.UserService;
-import githubchat.services.MessageService;
+import chatsystem.models.*;
+import chatsystem.services.ChatService;
+import chatsystem.services.MessageService;
+import chatsystem.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -28,6 +28,7 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.json.simple.JSONArray;
 
 @Controller
 public class Chatcontroller {
@@ -116,9 +117,12 @@ public class Chatcontroller {
 
     @GetMapping("/chat/{chatId}")
     public String chatMessages(@AuthenticationPrincipal OAuth2User principal, ModelMap map, @PathVariable long chatId) {
-        
         try {
             String username = (String) principal.getAttributes().get("login");
+            String username2 = (String) principal.getAttributes().get("nickname");
+            if(username == null && username2!= null){
+                username = username2;
+            }
             //messagingTemplate.convertAndSend("/topic/greetings", message);
             if (cd.doesChatBelongToUser(username, chatId)) {
                 List<Message> messages = (List<Message>) md.findMessagesFromChat(chatId);

@@ -15,7 +15,12 @@
         </thead>
         <tbody>
             <tr th:each="message : ${messages}">
-                <td><span th:text="${message.getUser().getUsername()}"></span>:</td>
+                <td th:if="${message.getUser().getUsername() != username}">
+                    <span th:text="${message.getUser().getUsername()}"></span>:
+                </td>
+                <td th:if="${message.getUser().getUsername() == username}">
+                    <span>Ich:</span>
+                </td>
                 <td><span th:text="${message.content}"></span></td>
             </tr>
             <div id="message-area"></div>
@@ -43,7 +48,11 @@
                 let senderColumn = newRow.insertCell(0); // First column
                 let messageColumn = newRow.insertCell(1); // Second column
 
-                senderColumn.textContent = myformattedmessage.user;
+                if(myformattedmessage.user == myuser){
+                    senderColumn.textContent = "Ich: ";
+                }else{
+                    senderColumn.textContent = myformattedmessage.user+": ";
+                }
                 messageColumn.textContent = myformattedmessage.message;
             });
         });

@@ -1,4 +1,4 @@
-package githubchat;
+package chatsystem;
 
 public class ChatMessage {
     private String content;

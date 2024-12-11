@@ -1,4 +1,4 @@
-package githubchat.websocket;
+package chatsystem.websocket;
 
 
 import org.springframework.web.socket.WebSocketSession;

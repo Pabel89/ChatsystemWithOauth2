@@ -1,4 +1,4 @@
-package githubchat;
+package chatsystem;
 
 
 import org.springframework.context.annotation.Bean;

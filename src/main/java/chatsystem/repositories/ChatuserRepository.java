@@ -1,10 +1,11 @@
-package githubchat.repositories;
+package chatsystem.repositories;
 
 import java.util.List;
-import githubchat.models.Chatuser;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import chatsystem.models.Chatuser;
 
 @Repository
 public interface ChatuserRepository extends CrudRepository<Chatuser, Long> {

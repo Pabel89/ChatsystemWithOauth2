@@ -1,4 +1,4 @@
-package githubchat.models;
+package chatsystem.models;
 
 import jakarta.persistence.*;
 
