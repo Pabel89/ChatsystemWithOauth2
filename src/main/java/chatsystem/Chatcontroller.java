@@ -8,12 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import chatsystem.models.*;
-import chatsystem.services.ChatService;
-import chatsystem.services.MessageService;
-import chatsystem.services.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -30,6 +24,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.json.simple.JSONArray;
 
+import chatsystem.models.*;
+import chatsystem.services.ChatService;
+import chatsystem.services.MessageService;
+import chatsystem.services.UserService;
+import chatsystem.assets.RandomAccessKeyGenerator;
+
+
+
+
 @Controller
 public class Chatcontroller {
 
@@ -43,6 +46,7 @@ public class Chatcontroller {
     UserService us;
 
     private final OAuth2AuthorizedClientService authorizedClientService;
+    public RandomAccessKeyGenerator rakg = new RandomAccessKeyGenerator();
 
     JSONParser parser = new JSONParser();
 
@@ -159,7 +163,9 @@ public class Chatcontroller {
        System.out.println(initalMessage);
       
         String user = "test";
+        String accesskey = rakg.generateRandomAccessKey(20);
         Chat mynewChat = new Chat(true,true);
+        mynewChat.setChatAccesskey(accesskey);
 
          
         
