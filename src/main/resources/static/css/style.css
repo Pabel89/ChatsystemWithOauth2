@@ -1,3 +1,21 @@
 .important{
     color:red;
 }
+
+#mychatbtn{
+    background-color: #95e0e8;
+}
+#chatview_nav{
+     background-color: #c8e5e8;
+}
+
+#chatselectcontainer{
+    position: relative;
+    margin-top: 2%;
+    margin-left: 5%;
+}
+#chatarea{
+    position: relative;
+    margin-top: 2%;
+    margin-left: 3%;
+}

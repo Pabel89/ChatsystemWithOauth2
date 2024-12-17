@@ -60,8 +60,10 @@ public class Chatcontroller {
         String username = "";
 
         for (String key : principal.getAttributes().keySet()) {
-            if(key=="login"){
-            username = (String) principal.getAttributes().get(key);
+            if(key.equals("login")){
+               username = (String) principal.getAttributes().get(key);
+            }else if(key.equals("nickname")){
+                username = (String) principal.getAttributes().get(key);
             }
         }
 
@@ -140,10 +142,12 @@ public class Chatcontroller {
                     return "chatmessages"; // Assuming the template is named "chat.html"
 
                 }else{
-                    return "Chat invalid";
+                    map.addAttribute("error","invalid");
+                    return "chatroomError.html";
                 }
             } else {
-                return "unauthorized"; // Handle unauthorized access
+                map.addAttribute("error","not authorized");
+                return "chatroomError.html"; // Handle unauthorized access
             }
         } catch (DataAccessException | NullPointerException e) {
             System.out.println("Error fetching messages for chatId {} "+ e);
