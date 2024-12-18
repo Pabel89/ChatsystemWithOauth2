@@ -19,3 +19,29 @@
     margin-top: 2%;
     margin-left: 3%;
 }
+
+.chat-bubble {
+    position: relative;
+    background-color: #0d6efd;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 300px;
+  }
+  .chat-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: -9px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #0d6efd transparent transparent transparent;
+  }
+  .chat-bubble-right {
+    background-color: #198754;
+  }
+  .chat-bubble-right::after {
+    left: auto;
+    right: -9px;
+    border-color: #198754 transparent transparent transparent;
+  }

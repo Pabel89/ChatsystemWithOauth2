@@ -32,25 +32,27 @@
       </nav>
       <div id="chatarea">
             <h1>Folgende Nachrichten in diesem Chat</h1>
-            <table id="messagetable">
-                <thead>
-                    <tr>
-                        <th>Nachrichten</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="message : ${messages}">
-                        <td th:if="${message.getUser().getUsername() != username}">
-                            <span th:text="${message.getUser().getUsername()}"></span>:
-                        </td>
-                        <td th:if="${message.getUser().getUsername() == username}">
-                            <span>Ich:</span>
-                        </td>
-                        <td><span th:text="${message.content}"></span></td>
-                    </tr>
-                    <div id="message-area"></div>
-                </tbody>
-            </table>
+            <br/>    
+            <div id="chatContainer">
+                <!-- Left-aligned chat bubble -->
+                <div th:each="message : ${messages}" class="d-flex align-items-start mb-3">
+                    <div th:if="${message.getUser().getUsername() == username}" class="flex-shrink-0 me-3">
+                        <div th:if="${message.getUser().getUsername() == username}" class="rounded-circle bg-secondary" style="width: 40px; height: 40px;"></div>
+                        <span>Ich: </span>
+                      </div>
+                      <div th:if="${message.getUser().getUsername() == username}" class="chat-bubble" th:text="${message.content}">
+                      </div>
+                      <br/>
+                      <br/>
+                    
+                        <div  th:if="${message.getUser().getUsername() != username}" class="chat-bubble chat-bubble-right" th:text="${message.content}">
+                        </div>
+                        <div th:if="${message.getUser().getUsername() != username}" class="flex-shrink-0 ms-3">
+                        <div th:if="${message.getUser().getUsername() != username}" class="rounded-circle bg-secondary" style="width: 40px; height: 40px;"></div>
+                        <span th:text="${message.getUser().getUsername()}"></span>
+                        </div>
+                    
+            </div>
             <script th:inline="javascript">
                 var socket = new SockJS('/mywebsocket');
                 var stompClient = Stomp.over(socket);
@@ -65,20 +67,38 @@
                     stompClient.subscribe(source,   
             function(message) {
                         
-                        let table = document.getElementById("messagetable").getElementsByTagName('tbody')[0];
                         
+                        const div = document.getElementById("chatContainer");
                         console.log("Message content"+message.body);
                         let myformattedmessage = JSON.parse(message.body);
-                        let newRow = table.insertRow();
-                        let senderColumn = newRow.insertCell(0); // First column
-                        let messageColumn = newRow.insertCell(1); // Second column
-
+                       
                         if(myformattedmessage.user == myuser){
-                            senderColumn.textContent = "Ich: ";
+                            const newHtml = `
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="flex-shrink-0 me-3">
+                                <div class="rounded-circle bg-secondary" style="width: 40px; height: 40px;"></div>
+                                <span>Ich</span>
+                                </div>
+                                <div class="chat-bubble">`+
+                                    myformattedmessage.message
+                                +`
+                                </div>
+                            </div>
+                            `;
+                            div.innerHTML += newHtml;
                         }else{
-                            senderColumn.textContent = myformattedmessage.user+": ";
+                            const newHtml = `<div class="d-flex align-items-start mb-3"><div class="chat-bubble chat-bubble-right">
+                                            `+myformattedmessage.message+`
+                                        </div>
+                                        <div class="flex-shrink-0 ms-3">
+                                            <div class="rounded-circle bg-secondary" style="width: 40px; height: 40px;"></div>
+                                            <span>`+myformattedmessage.user+`</span>
+                                        </div></div>`;
+                            div.innerHTML += newHtml;
                         }
-                        messageColumn.textContent = myformattedmessage.message;
+                        
+                       
+                        
                     });
                 });
 
@@ -103,10 +123,16 @@
 
                     // Eingabefeld zurücksetzen
                     document.getElementById("usermessage").value = "";
+                    window.scrollBy(0, 150);
                 }
             </script>
-            <input type="text" id="usermessage"></input>
-            <button onclick="sendMessage()">Send Message</button>
+           
     </div>
+    <div class="input-group input-group-sm mb-3">
+       <input type="text" id="usermessage" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+    </div>
+    <button onclick="sendMessage()" type="button" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+        senden
+      </button>
 </body>
 </html>
